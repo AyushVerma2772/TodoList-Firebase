@@ -28,15 +28,21 @@ const Card = ({ title, desc, time, id }) => {
             titleRef.current.setAttribute("contenteditable", "false");
             descRef.current.setAttribute("contenteditable", "false");
 
-            const docRef = doc(db, colName, todoId);
-            await updateDoc(docRef, {
-                title: titleRef.current.innerText,
-                description: descRef.current.innerText
-            })
-            alert("Todo Updated");
-            setEdit(true)
+            if (titleRef.current.innerText === "") {
+                alert("Title can't be empty");
+            }
+
+            else {
+                const docRef = doc(db, colName, todoId);
+                await updateDoc(docRef, {
+                    title: titleRef.current.innerText,
+                    description: descRef.current.innerText
+                })
+                alert("Todo Updated");
+                setEdit(true)
+            }
         }
-        
+
     }
 
     //! Delete todo
@@ -53,8 +59,8 @@ const Card = ({ title, desc, time, id }) => {
                     {/* Header */}
                     <div className="card-header bg-transparent border-success fw-semibold container">
                         <div className="row">
-                            <div className="col-6 overflow-hidden d-flex justify-content-start" 
-                             ref={titleRef}>{title}</div>
+                            <div className="col-6 overflow-hidden d-flex justify-content-start"
+                                ref={titleRef}>{title}</div>
                             <div className="col-6 overflow-hidden d-flex justify-content-end">{time}</div>
                         </div>
                     </div>
@@ -65,7 +71,7 @@ const Card = ({ title, desc, time, id }) => {
                     {/* Footer */}
                     <div className="card-footer bg-transparent border-success container">
                         <div className="row">
-                            <div className="col-6 text-center"><button className='btn btn-sm btn-warning' onClick={() => {updateTodo(id)}}> {edit ? 'Edit': 'Done'} <i className="bi bi-pencil-fill"></i></button></div>
+                            <div className="col-6 text-center"><button className='btn btn-sm btn-warning' onClick={() => { updateTodo(id) }}> {edit ? 'Edit' : 'Done'} <i className="bi bi-pencil-fill"></i></button></div>
                             <div className="col-6 text-center"><button className='btn btn-sm btn-danger ' onClick={() => deleteTodo(id)}>Delete <i className="bi bi-trash-fill"></i> </button></div>
                         </div>
                     </div>

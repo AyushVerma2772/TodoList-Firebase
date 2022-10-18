@@ -4,24 +4,29 @@ import { addDoc, collection } from 'firebase/firestore';
 
 
 const AddTodo = () => {
-    
+
     const colName = 'todos';
     const colRef = collection(db, colName);
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
-    const today  = new Date();
+    const today = new Date();
 
 
     const addTodo = async (e) => {
         e.preventDefault();
-        addDoc(colRef, {
-            title: title,
-            description: desc,
-            time: `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}  ${today.getHours()} : ${today.getMinutes()}`
-        });
-        alert("Todo Added");
-        setTitle("");
-        setDesc("");
+        if (title === "") {
+            alert("Title can't be empty");
+        }
+        else {
+            addDoc(colRef, {
+                title: title,
+                description: desc,
+                time: `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}  ${today.getHours()} : ${today.getMinutes()}`
+            });
+            alert("Todo Added");
+            setTitle("");
+            setDesc("");
+        }
 
     }
 
