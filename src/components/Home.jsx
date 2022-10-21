@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AddTodo from './AddTodo';
 import Card from './Card';
 import { db } from '../firebase-config';
-import {collection, getDocs} from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const Home = () => {
 
@@ -10,20 +10,33 @@ const Home = () => {
   const colName = "todos";
   const colRef = collection(db, colName);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const getData = async () => {
-      const data = await getDocs(colRef);
-      const dataArr = data.docs.map(doc => ({ ...doc.data(), id: doc.id }))
-      // console.log(dataArr);
-      setTodos(dataArr);
+  //   const getData = async () => {
+  //     const data = await getDocs(colRef);
+  //     const dataArr = data.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+  //     // console.log(dataArr);
+  //     setTodos(dataArr);
+  //   }
+
+  //   getData();
+  //   // eslint-disable-next-line
+  // }, [])
+
+  useEffect(() => {
+    const unsub = onSnapshot(colRef, snapshot => {
+      setTodos(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+    });
+
+    return () => {
+      unsub();
     }
-    
-    getData();
+
     // eslint-disable-next-line
   }, [])
 
-  
+
+
 
   return (
     <>
@@ -41,9 +54,9 @@ const Home = () => {
           <div className="row justify-content-center">
 
             {
-                todos.map((ele) => {
-                  return <Card key={ele.id} title={ele.title} desc={ele.description} id={ele.id} time={ele.time} />
-                })
+              todos.map((ele) => {
+                return <Card key={ele.id} title={ele.title} desc={ele.description} id={ele.id} time={ele.time} />
+              })
             }
 
           </div>
